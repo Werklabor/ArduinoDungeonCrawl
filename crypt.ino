@@ -2,14 +2,20 @@
  * Button Interaction */
 
 int normalizeButtonOrder[] = {15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0};
+int currentButtonPressed = -1;
 int getButtonPressed(){
 	int button = IBridge_Read_Key();
-	if(button == 0){
-		return false;
+	if(button == currentButtonPressed){
+		return -1;
+	}else if(button == 0){
+		currentButtonPressed = -1;
+		return -1;
 	}else{
+		currentButtonPressed = button;
 		return normalizeButtonOrder[button - 1];
 	}
 }
+
 
 /*
  * Display Interaction */
@@ -35,28 +41,28 @@ void displayWriteString(char* text){
 	IBridge_LCD5110_write_string(text);
 }
 
+
 /*
  * Visuals */
 
  void displayWelcomeScreen(){
  	displayWriteString("              ");
- 	displayWriteString(" M E M O R Y  ");
- 	displayWriteString(" -Zeilenwerk- ");
+ 	displayWriteString(" MysteryCrypt ");
+ 	displayWriteString(" by @cdn      ");
  	displayWriteString("              ");
- 	displayWriteString(" Press a key  ");
- 	displayWriteString(" to start!    ");
+ 	displayWriteString(" Press any    ");
+ 	displayWriteString(" key to start ");
  }
 
 // ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ ] _ ^
-
 void displayRoomWithContent(char* firstRow, char* secondRow){
 	displayClear();
 	//								 "--------------"
 	displayWriteString(" %          / ");
 	displayWriteString("   +------+   ");
-	displayWriteString("<- I");
+	displayWriteString("   I");
 	  displayWriteString(firstRow);
-		displayWriteString("I ->");
+		displayWriteString("I   ");
 	displayWriteString("   I");
 	  displayWriteString(secondRow);
 		displayWriteString("I   ");
@@ -71,14 +77,11 @@ void displayDoor(){
 	displayRoomWithContent("      ", "   @  ");
 }
 
+
 /*
- * Main Logic */
+ * Location & orientation */
 
-void setup(){
-  displayInitialize();
-}
-
-int oldOrientation = -1;
+int previousOrientation = -1;
 int orientation = 0; // 0-3
 void setOrientation(int diff){
 	orientation = orientation + diff;
@@ -88,41 +91,57 @@ void setOrientation(int diff){
 		orientation = 3;
 	}
 }
-boolean setOrientationFromButton(int button){
-	switch(button){
-		case 4:
-			setOrientation(1);
-			return true;
-		case 7:
-			setOrientation(-1);
-			return true;
+void setOrientationFromButton(int button){
+ 	switch(button){
+ 		case 4:
+ 			setOrientation(1);
+ 			break;
+ 		case 7:
+ 			setOrientation(-1);
+ 			break;
+ 	}
+ }
+
+boolean detectAndRememberOrientationChange(){
+	if(previousOrientation != orientation){
+		previousOrientation = orientation;
+		return true;
 	}
 	return false;
+}
+void displayCurrentLocationWithOrientation(int orientation) {
+	switch(orientation){
+		case 0:
+			displayWall();
+			break;
+		case 1:
+			displayWall();
+			break;
+		case 2:
+			displayDoor();
+			break;
+		case 3:
+			displayWall();
+			break;
+	}
+}
+
+
+/*
+ * Main Logic */
+
+void setup(){
+  displayInitialize();
 }
 
 void loop()
 {
   while(1){
     int button = getButtonPressed();
-		boolean shouldPause = setOrientationFromButton(button);
-		if(oldOrientation != orientation){
-			oldOrientation = orientation;
+		setOrientationFromButton(button);
 
-			switch(orientation){
-				case 0:
-					displayWall();
-					break;
-				case 1:
-					displayWall();
-					break;
-				case 2:
-					displayDoor();
-					break;
-				case 3:
-					displayWall();
-					break;
-			}
+		if(detectAndRememberOrientationChange()){
+			displayCurrentLocationWithOrientation(orientation);
 		}
-		if(shouldPause) delay(500);
   }
 }
