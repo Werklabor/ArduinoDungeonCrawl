@@ -1,6 +1,6 @@
 /*
- * Global State
- */
+* Global State
+*/
 
 // Orientation
 
@@ -10,7 +10,7 @@
 #define EAST 3
 
 int previousOrientation = -1;
-int orientation = NORTH; // 0-3
+int orientation = NORTH;
 
 // Location
 
@@ -45,8 +45,8 @@ int error = NO_ERROR;
 
 
 /*
- * Button Interaction
- */
+* Button Interaction
+*/
 
 int normalizeButtonOrder[] = {15, 11, 7, 3, 14, 10, 6, 2, 13, 9, 5, 1, 12, 8, 4, 0};
 int currentButtonPressed = -1;
@@ -65,12 +65,12 @@ int getButtonPressed(){
 
 
 /*
- * Display Interaction
- */
+* Display Interaction
+*/
 
 void displayInitialize(){
 	IBridge_init();
-  IBridge_LCD5110_clear();
+	IBridge_LCD5110_clear();
 }
 void displayMoveCursor(int x, int y){
 	IBridge_LCD5110_set_XY(x, y);
@@ -91,53 +91,53 @@ void displayWriteString(char* text){
 
 
 /*
- * Visuals
- *
- * Available characters:
- * ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ ] _ ^
- */
+* Visuals
+*
+* Available characters:
+* ! " # $ % & ' ( ) * + , - . / : ; < = > ? @ [ ] _ ^
+*/
 
 void renderWelcomeScreen(){
- 	displayWriteString("              ");
- 	displayWriteString(" MysteryCrypt ");
- 	displayWriteString(" by @cdn      ");
- 	displayWriteString("              ");
- 	displayWriteString(" Press any    ");
- 	displayWriteString(" key to start ");
- }
+	displayWriteString("              ");
+	displayWriteString(" MysteryCrypt ");
+	displayWriteString(" by @cdn      ");
+	displayWriteString("              ");
+	displayWriteString(" Press any    ");
+	displayWriteString(" key to start ");
+}
 
 void renderMessage(char* firstRow, char* secondRow){ // Both with exactly 8 characters
- 	displayClear();
- 	displayWriteString(" ____________ ");
- 	displayWriteString(" I          I ");
- 	displayWriteString(" I ");
- 		displayWriteString(firstRow);
- 		displayWriteString(" I ");
- 	displayWriteString(" I ");
- 		displayWriteString(secondRow);
- 		displayWriteString(" I ");
- 	displayWriteString(" I__________I ");
- 	displayWriteString("              ");
- }
+	displayClear();
+	displayWriteString(" ____________ ");
+	displayWriteString(" I          I ");
+	displayWriteString(" I ");
+	displayWriteString(firstRow);
+	displayWriteString(" I ");
+	displayWriteString(" I ");
+	displayWriteString(secondRow);
+	displayWriteString(" I ");
+	displayWriteString(" I__________I ");
+	displayWriteString("              ");
+}
 void renderRoomWithContent(char* firstRow, char* secondRow){
 	displayClear();
 	displayWriteString(" %          / ");
 	displayWriteString("   +------+   ");
 	displayWriteString("   I");
-	  displayWriteString(firstRow);
-		displayWriteString("I   ");
+	displayWriteString(firstRow);
+	displayWriteString("I   ");
 	displayWriteString("   I");
-	  displayWriteString(secondRow);
-		displayWriteString("I   ");
+	displayWriteString(secondRow);
+	displayWriteString("I   ");
 	displayWriteString("   +------+   ");
 
 	char x = currentLocation[0] + '0';
 	char y = currentLocation[1] + '0';
 	displayWriteString(" /   ");
-		displayWriteChar(x);
-		displayWriteString("  ");
-		displayWriteChar(y);
-		displayWriteString("   % ");
+	displayWriteChar(x);
+	displayWriteString("  ");
+	displayWriteChar(y);
+	displayWriteString("   % ");
 }
 
 void renderWall(){
@@ -154,18 +154,18 @@ void renderError(){
 	displayClear();
 	switch(error){
 		case 0:
-			renderMessage("  Wall  ", " ahead! ");
-			break;
+		renderMessage("  Wall  ", " ahead! ");
+		break;
 		default:
-			renderMessage(" ERROR! ", " ------ ");
+		renderMessage(" ERROR! ", " ------ ");
 	}
 
 }
 
 
 /*
- * Orientation
- */
+* Orientation
+*/
 
 void setOrientation(int diff){
 	orientation = orientation + diff;
@@ -177,15 +177,15 @@ void setOrientation(int diff){
 }
 
 void setOrientationFromButton(int button){
- 	switch(button){
- 		case 4:
- 			setOrientation(1);
- 			break;
- 		case 7:
- 			setOrientation(-1);
- 			break;
- 	}
- }
+	switch(button){
+		case 4:
+		setOrientation(1);
+		break;
+		case 7:
+		setOrientation(-1);
+		break;
+	}
+}
 boolean detectAndRememberOrientationChange(){
 	if(previousOrientation != orientation){
 		previousOrientation = orientation;
@@ -196,8 +196,8 @@ boolean detectAndRememberOrientationChange(){
 
 
 /*
- * Location
- */
+* Location
+*/
 
 int getThingAtLocation(int x, int y){
 	if(x < 0 || y < 0 || x >= WIDTH || y >= LENGTH){
@@ -210,25 +210,25 @@ int getThingAtLocation(int x, int y){
 int xForOrientation(int orientation){
 	switch(orientation){
 		case NORTH:
-			return currentLocation[0];
+		return currentLocation[0];
 		case WEST:
-			return currentLocation[0] + 1;
+		return currentLocation[0] + 1;
 		case SOUTH:
-			return currentLocation[0];
+		return currentLocation[0];
 		case EAST:
-			return currentLocation[0] - 1;
+		return currentLocation[0] - 1;
 	}
 }
 int yForOrientation(int orientation){
 	switch(orientation){
 		case NORTH:
-			return currentLocation[1] - 1;
+		return currentLocation[1] - 1;
 		case WEST:
-			return currentLocation[1];
+		return currentLocation[1];
 		case SOUTH:
-			return currentLocation[1] + 1;
+		return currentLocation[1] + 1;
 		case EAST:
-			return currentLocation[1];
+		return currentLocation[1];
 	}
 }
 
@@ -253,16 +253,16 @@ void render() {
 	int thing = whatAmILookingAt(orientation);
 	switch(thing){
 		case WALL:
-			renderWall();
-			break;
+		renderWall();
+		break;
 		case EMPTY:
-			renderEmpty();
-			break;
+		renderEmpty();
+		break;
 		case SPECIAL:
-			renderSpecial();
-			break;
+		renderSpecial();
+		break;
 		// default:
-			// Log error…?
+		// Log error…?
 	}
 }
 
@@ -270,21 +270,20 @@ void setLocationFromButton(int button){
 	switch(button){
 		case 1:
 		case 2:
-			if(!moveInDirection(orientation)){
-				displayError(0);
-			}
-			break;
+		if(!moveInDirection(orientation)){
+			displayError(0);
+		}
+		break;
 		// default:
-			// Error logging
+		// Error logging
 	}
 }
 boolean detectAndRememberLocationChange(){
-	if(previousLocation[0] == currentLocation[0] &&
-	   previousLocation[1] == currentLocation[1]){
+	if(previousLocation[0] == currentLocation[0] && previousLocation[1] == currentLocation[1]){
 		return false;
 	}else{
 		previousLocation[0] = currentLocation[0];
-    previousLocation[1] = currentLocation[1];
+		previousLocation[1] = currentLocation[1];
 		return true;
 	}
 }
@@ -303,8 +302,8 @@ boolean handleButton(int button){
 
 
 /*
- * Error Displaying
- */
+* Error Displaying
+*/
 
 void displayError(int errorCode){
 	error = errorCode;
@@ -320,11 +319,11 @@ boolean showAndResetError(){
 }
 
 /*
- * Main Logic
- */
+* Main Logic
+*/
 
 void setup(){
-  displayInitialize();
+	displayInitialize();
 }
 
 void loop()
